@@ -11,8 +11,8 @@
 #define DISP_W (BUFFER_W * DISP_SCALE)
 #define DISP_H (BUFFER_H * DISP_SCALE)
 
-ALLEGRO_DISPLAY* disp;
-ALLEGRO_BITMAP* buffer;
+extern ALLEGRO_DISPLAY* disp;
+extern ALLEGRO_BITMAP* buffer;
 
 void create_display();
 void destroy_display();

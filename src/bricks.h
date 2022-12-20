@@ -3,14 +3,14 @@
 
 #include "display.h"
 
-#define BRICK_W (BUFFER_W * DISP_SCALE)
-#define BRICK_H (BUFFER_H * DISP_SCALE)
+#define BRICK_W (BUFFER_W / 10)
+#define BRICK_H 10
 
 #define BRICK_R 4
 #define BRICK_C (BUFFER_W / BRICK_W)
 
-#define BRICK_START_X 50
-#define BRICK_START_Y 0
+#define BRICK_START_X 0
+#define BRICK_START_Y 50
 
 typedef struct {
     int x;

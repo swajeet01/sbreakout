@@ -4,6 +4,9 @@
 #include "display.h"
 #include "common.h"
 
+ALLEGRO_DISPLAY* disp;
+ALLEGRO_BITMAP* buffer;
+
 void create_display() {
     al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
     al_set_new_display_option(ALLEGRO_SAMPLES, 8, ALLEGRO_SUGGEST);

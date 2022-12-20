@@ -37,7 +37,7 @@ void reset_game(Game* game) {
 }
 
 void handle_keyboard(Game* game, ALLEGRO_EVENT* event) {
-    switch (event->type) {
+    switch (event->keyboard.keycode) {
         case ALLEGRO_KEY_ESCAPE:
             game->done = true;
             break;
@@ -52,6 +52,22 @@ void handle_keyboard(Game* game, ALLEGRO_EVENT* event) {
 
 void handle_mouse(Game* game, ALLEGRO_EVENT* event) {
     game->pad.x = event->mouse.x;
+}
+
+void update_pad(Game* game) {
+    if ((game->pad.x + PAD_W) > BUFFER_W)
+        game->pad.x = BUFFER_W - PAD_W;
+    if (game->pad.x < 0)
+        game->pad.x = 0;
+}
+
+void update_ball(Game* game) {
+    if (game->ball.x - BALL_R < 0 || game->ball.x + BALL_R > BUFFER_W)
+        game->ball.dx = -game->ball.dx;
+    if (game->ball.y - BALL_R < 0 || game->ball.y + BALL_R > BUFFER_H)
+        game->ball.dy = -game->ball.dy;
+    game->ball.x += game->ball.dx;
+    game->ball.y += game->ball.dy;
 }
 
 int main() {
@@ -87,12 +103,19 @@ int main() {
 
     ALLEGRO_EVENT event;
 
+    init_bricks(game.bricks);
+    init_ball(&game.ball);
+
     while (1) {
         al_wait_for_event(queue, &event);
 
         switch (event.type) {
             case ALLEGRO_EVENT_TIMER:
                 // game logic;
+                game.frames++;
+                update_pad(&game);
+                update_ball(&game);
+                game.redraw = true;
                 break;
             case ALLEGRO_EVENT_KEY_DOWN:
                 handle_keyboard(&game, &event);
@@ -110,6 +133,11 @@ int main() {
             disp_pre_draw();
             al_clear_to_color(al_map_rgb_f(0, 0, 0));
             
+            draw_bricks(game.bricks);
+            draw_pad(game.pad.x);
+            draw_ball(game.ball.x, game.ball.y);
+            draw_hud(game.frames, game.score);
+
             disp_post_draw();
             game.redraw = false;
         }

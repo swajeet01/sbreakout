@@ -8,7 +8,7 @@
 
 void init_bricks(Brick bricks[BRICK_R][BRICK_C]) {
 
-#if BRICK_DEBUG == 1
+#ifdef BRICK_DEBUG
     printf("BRICK_R=%d\nBRICK_C=%d\n", BRICK_R, BRICK_C);
 #endif
 
@@ -22,7 +22,7 @@ void init_bricks(Brick bricks[BRICK_R][BRICK_C]) {
     const size_t brick_color_size = 
         sizeof(brick_colors) / sizeof(brick_colors[0]);
 
-#if BRICK_DEBUG == 1
+#ifdef BRICK_DEBUG
     printf("profile_size=%zu\n", brick_color_size);
 #endif
 
@@ -38,9 +38,9 @@ void init_bricks(Brick bricks[BRICK_R][BRICK_C]) {
                     .b = brick_colors[i % brick_color_size].b,
                 }
             };
-#if BRICK_DEBUG == 1
+#ifdef BRICK_DEBUG
             printf("(.x = %d, .y = %d, .r = %f, .g = %f, .b = %f)\n",
-                    bricks[i][j].x, bricks[i][j].y
+                    bricks[i][j].x, bricks[i][j].y,
                     bricks[i][j].color.r,
                     bricks[i][j].color.g,
                     bricks[i][j].color.b
