@@ -17,6 +17,7 @@ typedef struct {
     bool redraw;
     bool is_paused;
     bool is_started;
+    size_t brick_remaining;
     Brick bricks[BRICK_R][BRICK_C];
     Pad pad;
     Ball ball;
@@ -30,6 +31,7 @@ void reset_game(Game* game) {
     game->redraw = true;
     game->is_paused = false;
     game->is_started = false;
+    game->brick_remaining = BRICK_R * BRICK_C;
     game->pad.x = (BUFFER_W / 2) - (PAD_W / 2);
     game->pad.y = BUFFER_H - PAD_H;
     game->ball.x = game->pad.y - (BALL_R / 2);
@@ -61,13 +63,50 @@ void update_pad(Game* game) {
         game->pad.x = 0;
 }
 
+void ball_pad_collision(Game* game) {
+    if (collide(game->pad.x, game->pad.y, game->pad.x + PAD_W, game->pad.y + PAD_H,
+            game->ball.x - BALL_R, game->ball.y, game->ball.x + BALL_R,
+            game->ball.y + BALL_R)
+       ) {
+        const int pad_m = (game->pad.x + PAD_W - game->pad.x) / 2 + game->pad.x;
+        const int drift = game->ball.x - pad_m;
+        game->ball.dx = drift > 0 ? -game->ball.dx : game->ball.dx;
+        game->ball.dy = -game->ball.dy;
+    }
+}
+
+#define BRICK_AT(i, j) game->bricks[i][j]
+
+void ball_brick_collision(Game* game) {
+    for (size_t i = 0; i < BRICK_R; i++) {
+        for (size_t j = 0; j < BRICK_C; j++) {
+            if (!BRICK_AT(i, j).destroyed && collide(BRICK_AT(i, j).x,
+                        BRICK_AT(i, j).y,
+                        BRICK_AT(i, j).x + BRICK_W,
+                        BRICK_AT(i, j).y + BRICK_H,
+                        game->ball.x - BALL_R, game->ball.y - BALL_R,
+                        game->ball.x + BALL_R, game->ball.y + BALL_R)) {
+                BRICK_AT(i, j).destroyed = true;
+                game->ball.dy = -game->ball.dy;
+                game->brick_remaining--;
+            }
+        }
+    }
+}
+
 void update_ball(Game* game) {
     if (game->ball.x - BALL_R < 0 || game->ball.x + BALL_R > BUFFER_W)
         game->ball.dx = -game->ball.dx;
     if (game->ball.y - BALL_R < 0 || game->ball.y + BALL_R > BUFFER_H)
         game->ball.dy = -game->ball.dy;
+    ball_pad_collision(game);
+    ball_brick_collision(game);
     game->ball.x += game->ball.dx;
     game->ball.y += game->ball.dy;
+}
+
+void update_bricks(Game* game) {
+    
 }
 
 int main() {
