@@ -1,9 +1,6 @@
 #ifndef BRICKS_INCL
 #define BRICKS_INCL
 
-#include <allegro5/allegro5.h>
-#include <allegro5/allegro_primitives.h>
-
 #include "display.h"
 
 #define BRICK_W (BUFFER_W * DISP_SCALE)

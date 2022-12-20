@@ -1,10 +1,10 @@
 #include <stdio.h>
 
-#include "display.h"
-#include "bricks.h"
-
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
+
+#include "display.h"
+#include "bricks.h"
 
 void init_bricks(Brick bricks[BRICK_R][BRICK_C]) {
 
