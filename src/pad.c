@@ -1,6 +1,7 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
 
+#include "display.h"
 #include "pad.h"
 
 void draw_pad(int pad_x) {

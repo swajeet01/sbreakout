@@ -10,6 +10,6 @@ typedef struct {
     int dy;
 } Ball;
 
-void draw_ball(Ball* b);
+void draw_ball(int ball_x, int ball_y);
 
 #endif

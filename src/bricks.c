@@ -12,15 +12,15 @@ void init_bricks(Brick bricks[BRICK_R][BRICK_C]) {
     printf("BRICK_R=%d\nBRICK_C=%d\n", BRICK_R, BRICK_C);
 #endif
 
-    struct { float f; float g; float b; } brick_colors[] = {
+    struct { float r; float g; float b; } brick_colors[] = {
         { .r = 1, .g = 0, .b = 0 },
         { .r = 0, .g = 1, .b = 0 },
         { .r = 0, .g = 0, .b = 1 },
-        { .r = 1, .g = 1, .b = 1 },
-    }
+        { .r = 1, .g = 1, .b = 1 }
+    };
 
     const size_t brick_color_size = 
-        sizeof(brick_colors) / sizeof(color_profiles[0]);
+        sizeof(brick_colors) / sizeof(brick_colors[0]);
 
 #if BRICK_DEBUG == 1
     printf("profile_size=%zu\n", brick_color_size);
@@ -28,7 +28,7 @@ void init_bricks(Brick bricks[BRICK_R][BRICK_C]) {
 
     for (size_t i = 0; i < BRICK_R; i++) {
         for (size_t j = 0; j < BRICK_C; j++) {
-            bricks[i][j] = {
+            bricks[i][j] = (Brick) {
                 .x = BRICK_START_X + j * BRICK_W,
                 .y = BRICK_START_Y + i * BRICK_H,
                 .destroyed = false,

@@ -21,9 +21,9 @@ typedef struct {
         float g;
         float b;
     } color;
-} Bricks;
+} Brick;
 
-void init_bricks(Bricks bricks[BRICK_R][BRICK_C]);
-void draw_bricks(Bricks bricks[BRICK_R][BRICK_C]);
+void init_bricks(Brick bricks[BRICK_R][BRICK_C]);
+void draw_bricks(Brick bricks[BRICK_R][BRICK_C]);
 
 #endif

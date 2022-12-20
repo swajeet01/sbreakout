@@ -1,5 +1,5 @@
-#ifndef BRICKS_INCL
-#define BRICKS_INCL
+#ifndef PAD_INCL
+#define PAD_INCL
 
 #define PAD_W 75
 #define PAD_H 8

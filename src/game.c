@@ -3,11 +3,12 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
 
-#include "display.h";
+#include "display.h"
+#include "common.h"
 #include "hud.h"
-#include "bricks.h";
-#include "pad.h";
-#include "ball.h";
+#include "bricks.h"
+#include "pad.h"
+#include "ball.h"
 
 typedef struct {
     long frames;
@@ -70,10 +71,10 @@ int main() {
 
     must_init(al_init_primitives_addon(), "primitives");
 
-    al_register_event_source(queue, al_get_keyboard_event_source);
-    al_register_event_source(queue, al_get_display_event_source);
-    al_register_event_source(queue, al_get_timer_event_source);
-    al_register_event_source(queue, al_get_mouse_event_source);
+    al_register_event_source(queue, al_get_keyboard_event_source());
+    al_register_event_source(queue, al_get_display_event_source(disp));
+    al_register_event_source(queue, al_get_timer_event_source(timer));
+    al_register_event_source(queue, al_get_mouse_event_source());
 
     Game game;
 
@@ -94,22 +95,23 @@ int main() {
                 // game logic;
                 break;
             case ALLEGRO_EVENT_KEY_DOWN:
-                // keyboard handeling
+                handle_keyboard(&game, &event);
                 break;
-            case ALLEGRO_MOUSE_AXES:
-                // mouse handeling
+            case ALLEGRO_EVENT_MOUSE_AXES:
+                handle_mouse(&game, &event);
                 break;
             case ALLEGRO_EVENT_DISPLAY_CLOSE:
-                game->done = true;
+                game.done = true;
         }
 
-        if (done) break;
+        if (game.done) break;
 
-        if (redraw && al_is_event_queue_empty(queue)) {
+        if (game.redraw && al_is_event_queue_empty(queue)) {
             disp_pre_draw();
+            al_clear_to_color(al_map_rgb_f(0, 0, 0));
             
             disp_post_draw();
-            redraw = false;
+            game.redraw = false;
         }
     }
 
