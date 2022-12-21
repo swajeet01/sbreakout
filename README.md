@@ -2,6 +2,10 @@
 
 Simple breakout game with allegro5.
 
+Preview-
+
+![Game Preview](img/sbreakout.webp)
+
 ## Compilation and running
 
 This command should do the trick.

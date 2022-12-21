@@ -109,9 +109,7 @@ void update_ball(Game* game) {
     game->ball.y += game->ball.dy;
 }
 
-void update_bricks(Game* game) {
-    
-}
+void update_bricks(Game* game) { }
 
 int main() {
     must_init(al_init(), "allegro");
