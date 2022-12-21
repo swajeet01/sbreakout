@@ -75,20 +75,24 @@ void ball_pad_collision(Game* game) {
     }
 }
 
-#define BRICK_AT(i, j) game->bricks[i][j]
+#define BRICK_AT(i, j) (game->bricks[i][j])
 
 void ball_brick_collision(Game* game) {
     for (size_t i = 0; i < BRICK_R; i++) {
         for (size_t j = 0; j < BRICK_C; j++) {
             if (!BRICK_AT(i, j).destroyed && collide(BRICK_AT(i, j).x,
-                        BRICK_AT(i, j).y,
-                        BRICK_AT(i, j).x + BRICK_W,
-                        BRICK_AT(i, j).y + BRICK_H,
-                        game->ball.x - BALL_R, game->ball.y - BALL_R,
-                        game->ball.x + BALL_R, game->ball.y + BALL_R)) {
+                BRICK_AT(i, j).y,
+                BRICK_AT(i, j).x + BRICK_W,
+                BRICK_AT(i, j).y + BRICK_H,
+                game->ball.x - BALL_R, game->ball.y - BALL_R,
+                game->ball.x + BALL_R, game->ball.y + BALL_R)
+            ) {
                 BRICK_AT(i, j).destroyed = true;
                 game->ball.dy = -game->ball.dy;
                 game->brick_remaining--;
+                game->score++;
+                if (!game->brick_remaining) init_bricks(game->bricks);
+                return; // ensures only one collision
             }
         }
     }
