@@ -15,5 +15,6 @@ $ ./game
 
 - [ ] Complete game.
 - [ ] Automate installtion.
+- [ ] Cross platform implementation.
 - [ ] Improve README.md.
 
