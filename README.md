@@ -8,7 +8,7 @@ Preview-
 
 ## Compilation and running
 
-These command should do the trick.
+These commands should do the trick.
 
 ```
 $ cc src/*.c -O3 -o game $(pkg-config allegro-5 allegro_font-5 allegro_image-5 allegro_primitives-5 --libs --cflags)
