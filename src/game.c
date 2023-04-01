@@ -64,15 +64,21 @@ void update_pad(Game* game) {
 }
 
 void ball_pad_collision(Game* game) {
-    if (collide(game->pad.x, game->pad.y, game->pad.x + PAD_W, game->pad.y + PAD_H,
+    int collision = check_moving_collision(game->pad.x, game->pad.y, game->pad.x + PAD_W, game->pad.y + PAD_H,
             game->ball.x - BALL_R, game->ball.y, game->ball.x + BALL_R,
-            game->ball.y + BALL_R)
-       ) {
-        const int pad_m = (game->pad.x + PAD_W - game->pad.x) / 2 + game->pad.x;
-        const int drift = game->ball.x - pad_m;
-        game->ball.dx = drift > 0 ? -game->ball.dx : game->ball.dx;
-        game->ball.dy = -game->ball.dy;
+            game->ball.y + BALL_R, game->ball.dx, game->ball.dy);
+    switch (collision) {
+        case COLL_HORZ:
+            game->ball.dx = -game->ball.dx;
+            break;
+        case COLL_VERT:
+            game->ball.dy = -game->ball.dy;
+            break;
     }
+    // const int pad_m = (game->pad.x + PAD_W - game->pad.x) / 2 + game->pad.x;
+    // const int drift = game->ball.x - pad_m;
+    // game->ball.dx = drift > 0 ? -game->ball.dx : game->ball.dx;
+    // game->ball.dy = -game->ball.dy;
 }
 
 #define BRICK_AT(i, j) (game->bricks[i][j])
@@ -80,19 +86,29 @@ void ball_pad_collision(Game* game) {
 void ball_brick_collision(Game* game) {
     for (size_t i = 0; i < BRICK_R; i++) {
         for (size_t j = 0; j < BRICK_C; j++) {
-            if (!BRICK_AT(i, j).destroyed && collide(BRICK_AT(i, j).x,
-                BRICK_AT(i, j).y,
-                BRICK_AT(i, j).x + BRICK_W,
-                BRICK_AT(i, j).y + BRICK_H,
-                game->ball.x - BALL_R, game->ball.y - BALL_R,
-                game->ball.x + BALL_R, game->ball.y + BALL_R)
-            ) {
+            int collision = check_moving_collision(
+                    BRICK_AT(i, j).x,
+                    BRICK_AT(i, j).y,
+                    BRICK_AT(i, j).x + BRICK_W,
+                    BRICK_AT(i, j).y + BRICK_H,
+                    game->ball.x - BALL_R, game->ball.y - BALL_R,
+                    game->ball.x + BALL_R, game->ball.y + BALL_R,
+                    game->ball.dx, game->ball.dy
+            );
+            if (!BRICK_AT(i, j).destroyed && collision) {
                 BRICK_AT(i, j).destroyed = true;
-                game->ball.dy = -game->ball.dy;
+                switch (collision) {
+                    case COLL_HORZ:
+                        game->ball.dx = -game->ball.dx;
+                        break;
+                    case COLL_VERT:
+                        game->ball.dy = -game->ball.dy;
+                        break;
+                }
                 game->brick_remaining--;
                 game->score++;
                 if (!game->brick_remaining) init_bricks(game->bricks);
-                return; // ensures only one collision
+                return;
             }
         }
     }
