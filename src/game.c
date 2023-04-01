@@ -23,19 +23,18 @@ typedef struct {
     Ball ball;
 } Game;
 
-void reset_game(Game* game) {
-    game->frames = 0;
-    game->score = 0;
-    init_bricks(game->bricks);
+void reset_game(Game* game, int frames, int score) {
+    game->frames = frames;
+    game->score = score;
     game->done = false;
-    game->redraw = true;
     game->is_paused = false;
     game->is_started = false;
     game->brick_remaining = BRICK_R * BRICK_C;
+    init_bricks(game->bricks);
     game->pad.x = (BUFFER_W / 2) - (PAD_W / 2);
     game->pad.y = BUFFER_H - PAD_H;
-    game->ball.x = game->pad.y - (BALL_R / 2);
-    game->ball.y = BUFFER_W / 2;
+    game->ball.x = BUFFER_W / 2;
+    game->ball.y = game->pad.y - (BALL_R / 2);
 }
 
 void handle_keyboard(Game* game, ALLEGRO_EVENT* event) {
@@ -53,6 +52,7 @@ void handle_keyboard(Game* game, ALLEGRO_EVENT* event) {
 }
 
 void handle_mouse(Game* game, ALLEGRO_EVENT* event) {
+    if (game->is_started && !game->is_paused)
     game->pad.x = event->mouse.x;
 }
 
@@ -107,8 +107,6 @@ void ball_brick_collision(Game* game) {
                 }
                 game->brick_remaining--;
                 game->score++;
-                if (!game->brick_remaining) init_bricks(game->bricks);
-                return;
             }
         }
     }
@@ -132,7 +130,7 @@ int main() {
     must_init(al_install_keyboard(), "keyboard");
     must_init(al_install_mouse(), "mouse");
 
-    ALLEGRO_TIMER* timer = al_create_timer(1.0 / 30.0);
+    ALLEGRO_TIMER* timer = al_create_timer(1.0 / 60.0);
     must_init(timer, "timer");
 
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
@@ -151,7 +149,7 @@ int main() {
 
     Game game;
 
-    reset_game(&game);
+    reset_game(&game, 0, 0);
 
     al_grab_mouse(disp);
     al_hide_mouse_cursor(disp);
@@ -170,8 +168,13 @@ int main() {
             case ALLEGRO_EVENT_TIMER:
                 // game logic;
                 game.frames++;
-                update_pad(&game);
-                update_ball(&game);
+                if (game.is_started && !game.is_paused) {
+                    update_pad(&game);
+                    update_ball(&game);
+                    if (!game.brick_remaining) {
+                        reset_game(&game, game.frames, game.score);
+                    }
+                }
                 game.redraw = true;
                 break;
             case ALLEGRO_EVENT_KEY_DOWN:
@@ -189,12 +192,12 @@ int main() {
         if (game.redraw && al_is_event_queue_empty(queue)) {
             disp_pre_draw();
             al_clear_to_color(al_map_rgb_f(0, 0, 0));
-            
             draw_bricks(game.bricks);
             draw_pad(game.pad.x);
             draw_ball(game.ball.x, game.ball.y);
             draw_hud(game.frames, game.score);
-
+            if (!game.is_started) draw_start_message();
+            if (game.is_paused) draw_pause_message();
             disp_post_draw();
             game.redraw = false;
         }
