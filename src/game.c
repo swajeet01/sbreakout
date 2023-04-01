@@ -17,6 +17,7 @@ typedef struct {
     bool redraw;
     bool is_paused;
     bool is_started;
+    bool ball_fallen;
     size_t brick_remaining;
     Brick bricks[BRICK_R][BRICK_C];
     Pad pad;
@@ -29,12 +30,13 @@ void reset_game(Game* game, int frames, int score) {
     game->done = false;
     game->is_paused = false;
     game->is_started = false;
+    game->ball_fallen = false;
     game->brick_remaining = BRICK_R * BRICK_C;
     init_bricks(game->bricks);
     game->pad.x = (BUFFER_W / 2) - (PAD_W / 2);
     game->pad.y = BUFFER_H - PAD_H;
     game->ball.x = BUFFER_W / 2;
-    game->ball.y = game->pad.y - (BALL_R / 2);
+    game->ball.y = game->pad.y - BALL_R;
 }
 
 void handle_keyboard(Game* game, ALLEGRO_EVENT* event) {
@@ -115,8 +117,11 @@ void ball_brick_collision(Game* game) {
 void update_ball(Game* game) {
     if (game->ball.x - BALL_R < 0 || game->ball.x + BALL_R > BUFFER_W)
         game->ball.dx = -game->ball.dx;
-    if (game->ball.y - BALL_R < 0 || game->ball.y + BALL_R > BUFFER_H)
+    if (game->ball.y - BALL_R < 0)
         game->ball.dy = -game->ball.dy;
+    if (game->ball.y + BALL_R > BUFFER_H) {
+        game->ball_fallen = true;
+    }
     ball_pad_collision(game);
     ball_brick_collision(game);
     game->ball.x += game->ball.dx;
@@ -166,11 +171,13 @@ int main() {
 
         switch (event.type) {
             case ALLEGRO_EVENT_TIMER:
-                // game logic;
                 game.frames++;
                 if (game.is_started && !game.is_paused) {
                     update_pad(&game);
                     update_ball(&game);
+                    if (game.ball_fallen) {
+                        reset_game(&game, game.frames, 0);
+                    }
                     if (!game.brick_remaining) {
                         reset_game(&game, game.frames, game.score);
                     }

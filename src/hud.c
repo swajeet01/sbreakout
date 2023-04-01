@@ -20,7 +20,8 @@ void draw_hud(long frames, long score) {
 const char* start_message = "PRESS <SPACE> TO START";
 
 void draw_start_message() {
-    al_draw_text(font, al_map_rgb_f(1, 1, 1), BUFFER_W / 2, BUFFER_H / 2, ALLEGRO_ALIGN_CENTER, start_message);
+    al_draw_text(font, al_map_rgb_f(1, 1, 1), BUFFER_W / 2, BUFFER_H / 2 - 5, ALLEGRO_ALIGN_CENTER, "SBreakout by SG768");
+    al_draw_text(font, al_map_rgb_f(1, 1, 1), BUFFER_W / 2, BUFFER_H / 2 + 5, ALLEGRO_ALIGN_CENTER, start_message);
 }
 
 const char* pause_message = "PRESS <P> TO RESUME";
