@@ -48,7 +48,8 @@ void handle_keyboard(Game* game, ALLEGRO_EVENT* event) {
             game->is_started = true;
             break;
         case ALLEGRO_KEY_P:
-            game->is_paused = !game->is_paused;
+            if (game->is_started)
+                game->is_paused = !game->is_paused;
             break;
     }
 }
