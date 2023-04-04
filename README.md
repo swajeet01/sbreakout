@@ -17,7 +17,7 @@ $ ./game
 
 ## Grab a release
 
-[v1.0.0](https://github.com/swajeet01/sbreakout/releases/tag/v1.0.0)
+- [v1.0.0](https://github.com/swajeet01/sbreakout/releases/tag/v1.0.0)
 
 ## Tweaks
 
@@ -46,4 +46,6 @@ $ ./game
 ```
 
 - Ball speed- Modify `ball->dx`, `ball->dy` in `ball.c`
-- FPS- Change `60.0` to desider FPS (30.0, 45.0 etc) at line no. 138 in `game.c`
+- FPS- Change `60.0` to desired FPS (30.0, 45.0 etc) at line no. 138 in `game.c`
+- Brick color- Change `float` values in `bricks.c` at line no. 16, 17, 18 and 19.
+- Ball color- Change `float` values in `ball.c` at line no. 16.
