@@ -11,7 +11,7 @@ Preview-
 These commands should do the trick.
 
 ```
-$ cc src/*.c -O3 -o game $(pkg-config allegro-5 allegro_font-5 allegro_image-5 allegro_primitives-5 --libs --cflags)
+$ cc src/*/*.c src/game.c -Iinclude -O3 -o game $(pkg-config allegro-5 allegro_font-5 allegro_primitives-5 --libs --cflags)
 $ ./game
 ```
 
