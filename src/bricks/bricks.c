@@ -3,8 +3,8 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
 
-#include "display.h"
-#include "bricks.h"
+#include "../../include/display.h"
+#include "../../include/bricks.h"
 
 void init_bricks(Brick bricks[BRICK_R][BRICK_C]) {
 

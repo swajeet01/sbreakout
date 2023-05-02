@@ -1,9 +1,9 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
 
-#include "ball.h"
-#include "pad.h"
-#include "display.h"
+#include "../../include/ball.h"
+#include "../../include/pad.h"
+#include "../../include/display.h"
 
 void init_ball(Ball* ball) {
     ball->dx = 4;

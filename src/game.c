@@ -4,12 +4,12 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
 
-#include "display.h"
-#include "common.h"
-#include "hud.h"
-#include "bricks.h"
-#include "pad.h"
-#include "ball.h"
+#include "../include/display.h"
+#include "../include/common.h"
+#include "../include/hud.h"
+#include "../include/bricks.h"
+#include "../include/pad.h"
+#include "../include/ball.h"
 
 typedef struct {
     long frames;
@@ -128,7 +128,7 @@ void update_ball(Game* game) {
     if (game->ball.y - BALL_R < 0)
         game->ball.dy = -game->ball.dy;
     if (game->ball.y + BALL_R > BUFFER_H) {
-        // game->ball_fallen = true;
+        game->ball_fallen = true;
     }
     ball_pad_collision(game);
     ball_brick_collision(game);

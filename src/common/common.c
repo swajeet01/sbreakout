@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <sysexits.h>
 
-#include "common.h"
+#include "../../include/common.h"
 
 
 void must_init(bool test, const char* what) {

@@ -1,8 +1,8 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_image.h>
 
-#include "display.h"
-#include "common.h"
+#include "../../include/display.h"
+#include "../../include/common.h"
 
 ALLEGRO_DISPLAY* disp;
 ALLEGRO_BITMAP* buffer;

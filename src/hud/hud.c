@@ -1,9 +1,9 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 
-#include "hud.h"
-#include "common.h"
-#include "display.h"
+#include "../../include/hud.h"
+#include "../../include/common.h"
+#include "../../include/display.h"
 
 ALLEGRO_FONT* font;
 
