@@ -1,3 +1,4 @@
+#include <allegro5/mouse.h>
 #include <sysexits.h>
 
 #include <allegro5/allegro5.h>
@@ -22,6 +23,7 @@ typedef struct {
     Brick bricks[BRICK_R][BRICK_C];
     Pad pad;
     Ball ball;
+    float mouse_dx;
 } Game;
 
 void reset_game(Game* game, int frames, int score) {
@@ -55,15 +57,20 @@ void handle_keyboard(Game* game, ALLEGRO_EVENT* event) {
 }
 
 void handle_mouse(Game* game, ALLEGRO_EVENT* event) {
-    if (game->is_started && !game->is_paused)
-    game->pad.x = event->mouse.x;
+    if (game->is_started && !game->is_paused) {
+        // game->pad.x = event->mouse.x;
+        game->mouse_dx = event->mouse.dx;
+        al_set_mouse_xy(disp, DISP_W / 2, DISP_H / 2);
+    }
 }
 
 void update_pad(Game* game) {
-    if ((game->pad.x + PAD_W) > BUFFER_W)
+    if ((game->pad.x + PAD_W) > BUFFER_W) {
         game->pad.x = BUFFER_W - PAD_W;
-    if (game->pad.x < 0)
+    }
+    if (game->pad.x < 0) {
         game->pad.x = 0;
+    }
 }
 
 void ball_pad_collision(Game* game) {
@@ -121,7 +128,7 @@ void update_ball(Game* game) {
     if (game->ball.y - BALL_R < 0)
         game->ball.dy = -game->ball.dy;
     if (game->ball.y + BALL_R > BUFFER_H) {
-        game->ball_fallen = true;
+        // game->ball_fallen = true;
     }
     ball_pad_collision(game);
     ball_brick_collision(game);
@@ -183,6 +190,8 @@ int main() {
                         reset_game(&game, game.frames, game.score);
                     }
                 }
+                game.pad.x += game.mouse_dx;
+                game.mouse_dx *= 0.05;
                 game.redraw = true;
                 break;
             case ALLEGRO_EVENT_KEY_DOWN:
