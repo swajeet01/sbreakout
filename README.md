@@ -30,19 +30,25 @@ $ ./game
 ├── LICENSE
 ├── README.md
 └── src
-    ├── ball.c
-    ├── ball.h
-    ├── bricks.c
-    ├── bricks.h
-    ├── common.c
-    ├── common.h
-    ├── display.c
-    ├── display.h
+    ├── ball
+    │   ├── ball.c
+    │   └── ball.h
+    ├── bricks
+    │   ├── bricks.c
+    │   └── bricks.h
+    ├── common
+    │   ├── common.c
+    │   └── common.h
+    ├── display
+    │   ├── display.c
+    │   └── display.h
     ├── game.c
-    ├── hud.c
-    ├── hud.h
-    ├── pad.c
-    └── pad.h
+    ├── hud
+    │   ├── hud.c
+    │   └── hud.h
+    └── pad
+        ├── pad.c
+        └── pad.h
 ```
 
 - Ball speed- Modify `ball->dx`, `ball->dy` in `ball.c`
