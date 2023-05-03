@@ -1,8 +1,8 @@
 #include <allegro5/mouse.h>
-#include <sysexits.h>
 
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/mouse_cursor.h>
 
 #include "../include/display.h"
 #include "../include/common.h"
@@ -57,21 +57,10 @@ void handle_keyboard(Game* game, ALLEGRO_EVENT* event) {
 }
 
 void handle_mouse(Game* game, ALLEGRO_EVENT* event) {
-    if (game->is_started && !game->is_paused) {
-        // game->pad.x = event->mouse.x;
-        game->mouse_dx = event->mouse.dx;
-        al_set_mouse_xy(disp, DISP_W / 2, DISP_H / 2);
-    }
+    game->mouse_dx = event->mouse.dx;
+    al_set_mouse_xy(disp, DISP_W / 2, DISP_H / 2);
 }
 
-void update_pad(Game* game) {
-    if ((game->pad.x + PAD_W) > BUFFER_W) {
-        game->pad.x = BUFFER_W - PAD_W;
-    }
-    if (game->pad.x < 0) {
-        game->pad.x = 0;
-    }
-}
 
 void ball_pad_collision(Game* game) {
     int collision = check_moving_collision(game->pad.x, game->pad.y, game->pad.x + PAD_W, game->pad.y + PAD_H,
@@ -85,10 +74,6 @@ void ball_pad_collision(Game* game) {
             game->ball.dy = -game->ball.dy;
             break;
     }
-    // const int pad_m = (game->pad.x + PAD_W - game->pad.x) / 2 + game->pad.x;
-    // const int drift = game->ball.x - pad_m;
-    // game->ball.dx = drift > 0 ? -game->ball.dx : game->ball.dx;
-    // game->ball.dy = -game->ball.dy;
 }
 
 #define BRICK_AT(i, j) (game->bricks[i][j])
@@ -136,6 +121,15 @@ void update_ball(Game* game) {
     game->ball.y += game->ball.dy;
 }
 
+void update_pad(Game* game) {
+    if ((game->pad.x + PAD_W) > BUFFER_W) {
+        game->pad.x = BUFFER_W - PAD_W;
+    }
+    if (game->pad.x < 0) {
+        game->pad.x = 0;
+    }
+}
+
 void update_bricks(Game* game) { }
 
 int main() {
@@ -164,9 +158,6 @@ int main() {
 
     reset_game(&game, 0, 0);
 
-    al_grab_mouse(disp);
-    al_hide_mouse_cursor(disp);
-
     al_start_timer(timer);
 
     ALLEGRO_EVENT event;
@@ -181,6 +172,8 @@ int main() {
             case ALLEGRO_EVENT_TIMER:
                 game.frames++;
                 if (game.is_started && !game.is_paused) {
+                    al_grab_mouse(disp);
+                    al_hide_mouse_cursor(disp);
                     update_pad(&game);
                     update_ball(&game);
                     if (game.ball_fallen) {
@@ -189,6 +182,9 @@ int main() {
                     if (!game.brick_remaining) {
                         reset_game(&game, game.frames, game.score);
                     }
+                } else {
+                    al_ungrab_mouse();
+                    al_show_mouse_cursor(disp);
                 }
                 game.pad.x += game.mouse_dx;
                 game.mouse_dx *= 0.05;
@@ -198,7 +194,9 @@ int main() {
                 handle_keyboard(&game, &event);
                 break;
             case ALLEGRO_EVENT_MOUSE_AXES:
-                handle_mouse(&game, &event);
+                if (game.is_started && !game.is_paused) {
+                    handle_mouse(&game, &event);
+                }
                 break;
             case ALLEGRO_EVENT_DISPLAY_CLOSE:
                 game.done = true;
@@ -225,5 +223,5 @@ int main() {
     al_destroy_timer(timer);
     al_destroy_event_queue(queue);
 
-    return EX_OK;
+    return 0;
 }

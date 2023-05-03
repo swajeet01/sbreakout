@@ -9,3 +9,4 @@ void draw_pad(int pad_x) {
             al_map_rgb_f(1, 1, 1)
     );
 }
+

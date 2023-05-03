@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <sysexits.h>
+#include <stdlib.h>
 
 #include "../../include/common.h"
 
@@ -7,7 +7,7 @@
 void must_init(bool test, const char* what) {
     if (test) return;
     fprintf(stderr, "Err: can't initialize %s\n", what);
-    exit(EX_SOFTWARE);
+    exit(1);
 }
 
 int check_moving_collision(int ax1, int ay1, int ax2, int ay2,
