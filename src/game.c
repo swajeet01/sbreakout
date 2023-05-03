@@ -81,6 +81,7 @@ void ball_pad_collision(Game* game) {
 void ball_brick_collision(Game* game) {
     for (size_t i = 0; i < BRICK_R; i++) {
         for (size_t j = 0; j < BRICK_C; j++) {
+
             int collision = check_moving_collision(
                     BRICK_AT(i, j).x,
                     BRICK_AT(i, j).y,
@@ -90,8 +91,9 @@ void ball_brick_collision(Game* game) {
                     game->ball.x + BALL_R, game->ball.y + BALL_R,
                     game->ball.dx, game->ball.dy
             );
+
             if (!BRICK_AT(i, j).destroyed && collision) {
-                BRICK_AT(i, j).destroyed = true;
+
                 switch (collision) {
                     case COLL_HORZ:
                         game->ball.dx = -game->ball.dx;
@@ -100,6 +102,16 @@ void ball_brick_collision(Game* game) {
                         game->ball.dy = -game->ball.dy;
                         break;
                 }
+
+                BRICK_AT(i, j).hits_remaining--;
+                if (BRICK_AT(i, j).hits_remaining) {
+                    BRICK_AT(i, j).color.r = brick_colors[BRICK_AT(i, j).hits_remaining - 1].r;
+                    BRICK_AT(i, j).color.g = brick_colors[BRICK_AT(i, j).hits_remaining - 1].g;
+                    BRICK_AT(i, j).color.b = brick_colors[BRICK_AT(i, j).hits_remaining - 1].b;
+                    continue;
+                }
+
+                BRICK_AT(i, j).destroyed = true;
                 game->brick_remaining--;
                 game->score++;
             }
