@@ -24,9 +24,10 @@ typedef struct {
     Pad pad;
     Ball ball;
     float mouse_dx;
+    int level;
 } Game;
 
-void reset_game(Game* game, int frames, int score) {
+void reset_game(Game* game, int frames, int score, int level, float ball_dx, float ball_dy) {
     game->frames = frames;
     game->score = score;
     game->done = false;
@@ -37,8 +38,9 @@ void reset_game(Game* game, int frames, int score) {
     init_bricks(game->bricks);
     game->pad.x = (BUFFER_W / 2) - (PAD_W / 2);
     game->pad.y = BUFFER_H - PAD_H;
-    game->ball.x = BUFFER_W / 2;
+    game->ball.x = BUFFER_W / 2.0;
     game->ball.y = game->pad.y - BALL_R;
+    game->level = level;
 }
 
 void handle_keyboard(Game* game, ALLEGRO_EVENT* event) {
@@ -54,11 +56,17 @@ void handle_keyboard(Game* game, ALLEGRO_EVENT* event) {
                 game->is_paused = !game->is_paused;
             break;
     }
+    if (game->is_started && !game->is_paused) {
+        al_ungrab_mouse();
+        al_show_mouse_cursor(disp);
+    }
 }
 
 void handle_mouse(Game* game, ALLEGRO_EVENT* event) {
-    game->mouse_dx = event->mouse.dx;
-    al_set_mouse_xy(disp, DISP_W / 2, DISP_H / 2);
+    if (game->is_started && !game->is_paused) {
+        game->mouse_dx = event->mouse.dx;
+        al_set_mouse_xy(disp, DISP_W / 2, DISP_H / 2);
+    }
 }
 
 
@@ -168,7 +176,7 @@ int main() {
 
     Game game;
 
-    reset_game(&game, 0, 0);
+    reset_game(&game, 0, 0, 1, 0, 0);
 
     al_start_timer(timer);
 
@@ -186,29 +194,26 @@ int main() {
                 if (game.is_started && !game.is_paused) {
                     al_grab_mouse(disp);
                     al_hide_mouse_cursor(disp);
+                    al_set_mouse_xy(disp, DISP_W / 2, DISP_H / 2);
                     update_pad(&game);
                     update_ball(&game);
                     if (game.ball_fallen) {
-                        reset_game(&game, game.frames, 0);
+                        reset_game(&game, game.frames, 0, 1, 0, 0);
                     }
                     if (!game.brick_remaining) {
-                        reset_game(&game, game.frames, game.score);
+                        reset_game(&game, game.frames, game.score,
+                                   game.level + 1, 0, 0);
                     }
-                } else {
-                    al_ungrab_mouse();
-                    al_show_mouse_cursor(disp);
+                    game.pad.x += game.mouse_dx;
+                    game.mouse_dx *= 0.05;
                 }
-                game.pad.x += game.mouse_dx;
-                game.mouse_dx *= 0.05;
                 game.redraw = true;
                 break;
             case ALLEGRO_EVENT_KEY_DOWN:
                 handle_keyboard(&game, &event);
                 break;
             case ALLEGRO_EVENT_MOUSE_AXES:
-                if (game.is_started && !game.is_paused) {
-                    handle_mouse(&game, &event);
-                }
+                handle_mouse(&game, &event);
                 break;
             case ALLEGRO_EVENT_DISPLAY_CLOSE:
                 game.done = true;
@@ -222,7 +227,7 @@ int main() {
             draw_bricks(game.bricks);
             draw_pad(game.pad.x);
             draw_ball(game.ball.x, game.ball.y);
-            draw_hud(game.frames, game.score);
+            draw_hud(game.frames, game.score, game.level);
             if (!game.is_started) draw_start_message();
             if (game.is_paused) draw_pause_message();
             disp_post_draw();

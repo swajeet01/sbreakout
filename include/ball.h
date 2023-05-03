@@ -4,14 +4,14 @@
 #define BALL_R 5
 
 typedef struct {
-    int x;
-    int y;
-    int dx;
-    int dy;
+    float x;
+    float y;
+    float dx;
+    float dy;
 } Ball;
 
 void init_ball(Ball* ball);
 
-void draw_ball(int ball_x, int ball_y);
+void draw_ball(float ball_x, float ball_y);
 
 #endif

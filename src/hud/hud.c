@@ -12,9 +12,10 @@ void create_hud() {
     must_init(font, "font");
 }
 
-void draw_hud(long frames, long score) {
+void draw_hud(long frames, long score, int level) {
     al_draw_textf(font, al_map_rgb_f(1, 1, 1), 2, 0, 0, "Score: %ld", score);
     al_draw_textf(font, al_map_rgb_f(1, 1, 1), 2, 10, 0, "Frames: %ld", frames);
+    al_draw_textf(font, al_map_rgb_f(1, 1, 1), 2, 20, 0, "Level: %d", level);
 }
 
 const char* start_message = "PRESS <SPACE> TO START";
